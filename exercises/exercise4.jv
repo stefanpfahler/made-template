@@ -72,7 +72,7 @@ pipeline GoodsPipeline {
     */
 	block RenameHeaders oftype CellWriter {
 	at: range A1:F1;
-	write: ['id', 'produce', 'model', 'month', 'temperature', 'battery_temperature'];
+	write: ['id', 'producer', 'model', 'month', 'temperature', 'battery_temperature'];
 	}
 
 	// 3. Use fitting SQLite types (e.g., BIGINT, TEXT or FLOAT) for all columns
@@ -80,7 +80,7 @@ pipeline GoodsPipeline {
 		header: true;
 		columns: [
 			"id" oftype PositiveInteger, // PositiveInteger 
-			"produce" oftype text,
+			"producer" oftype text,
 			"model" oftype text,
 			"month" oftype Month,
 			"temperature" oftype decimal,
