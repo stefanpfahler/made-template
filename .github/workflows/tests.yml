@@ -2,16 +2,12 @@ name: Tests
 
 on:
   push:
-    paths:
-      - project/**
-      - .github/tests.yml
 
 jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
       - name: Run tests.sh
-        id: tests.sh
         run: |
           chmod +x ./project/tests.sh
           ./project/tests.sh
