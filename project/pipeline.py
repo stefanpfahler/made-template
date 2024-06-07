@@ -33,12 +33,14 @@ class GlobalGHGEmissions:
     cleaned: pd.DataFrame
     
 def fetch_and_clean_eu_transaction_log():
+    print("Fetching European Transaction Log...")
     eu_transaction_log = EuropeanUnionTransactionLog()
     eu_transaction_log.file = pd.ExcelFile(URL_EU_TRANSACTION_LOG)
 
     eu_transaction_log_data = pd.read_excel(eu_transaction_log.file, header=21, sheet_name="data")
     eu_transaction_log_activity_codes = pd.read_excel(eu_transaction_log.file, sheet_name="activity codes")
 
+    print("  Cleaning European Transaction Log...\n")
     # merge with activity code description table
     eu_transaction_log.raw = pd.merge(
         left=eu_transaction_log_data,
@@ -103,20 +105,24 @@ def fetch_and_clean_eu_transaction_log():
     return eu_transaction_log
 
 def fetch_and_clean_eu_ets_operators():
+    print("Fetching European Emissions Trading System operators...")
     eu_ets_operators = EUETSOperators()
     eu_ets_operators.file= pd.ExcelFile(URL_EU_ETS_OPERATORS)
     
     # clean eu ets operators dataset
+    print("  Cleaning European Emissions Trading System operators...\n")
     eu_ets_operators.raw = pd.read_excel(eu_ets_operators.file)
     eu_ets_operators.cleaned = eu_ets_operators.raw
 
     return eu_ets_operators
 
 def fetch_and_clean_co2e_price_development():
+    print("Fetching CO2e price development data...")
     co2e_price_development = CO2ePriceDevelopment()
     co2e_price_development.file = pd.ExcelFile(URL_CO2E_PRICE_DEVELOPMENT)
 
     # clean co2e price development dataset
+    print("  Cleaning CO2e price development data...\n")
     co2e_price_development.raw = pd.read_excel(
         co2e_price_development.file, 
         sheet_name="Daten", 
@@ -129,10 +135,12 @@ def fetch_and_clean_co2e_price_development():
     return co2e_price_development
 
 def fetch_and_clean_global_ghg_emissions():
+    print("Fetching global greenhouse gas emissions data...")
     global_ghg_emissions = GlobalGHGEmissions()
     global_ghg_emissions.file = pd.ExcelFile(URL_GLOBAL_GHG_EMSISSIONS)    
 
     # clean global ghg emissions dataset
+    print("  Cleaning global greenhouse gas emissions data...\n")
     global_ghg_emissions.raw = pd.read_excel(global_ghg_emissions.file, sheet_name="GHG_totals_by_country")
     global_ghg_emissions.cleaned = global_ghg_emissions.raw.dropna()
     return global_ghg_emissions
@@ -143,11 +151,22 @@ def main():
     co2e_price_development = fetch_and_clean_co2e_price_development()
     global_ghg_emissions = fetch_and_clean_global_ghg_emissions()
     
+    print("Loading data into SQLite tables at ./data/data.sqlite...")
     conn = sqlite3.connect(r"./data/data.sqlite")
+
+    print("\tLoading eu_transaction_log...")
     eu_transaction_log.cleaned.to_sql("eu_transaction_log", conn, if_exists="replace", index=True)
+
+    print("\tLoading eu_ets_operators...")
     eu_ets_operators.cleaned.to_sql("eu_ets_operators", conn, if_exists="replace", index=True)
+
+    print("\tLoading co2e_price_development...")
     co2e_price_development.cleaned.to_sql("co2e_price_development", conn, if_exists="replace", index=True)
+
+    print("\tLoading global_ghg_emissions...\n")
     global_ghg_emissions.cleaned.to_sql("global_ghg_emissions", conn, if_exists="replace", index=True)
+    
+    print("Data pipeline finished successfully.")
 
 
 if __name__ == "__main__":
