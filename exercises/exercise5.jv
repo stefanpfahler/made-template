@@ -32,7 +32,7 @@ pipeline GoodsPipeline {
     Use the “data.csv” in the zip file
     */
     block LatinTextFileInterpreter oftype TextFileInterpreter { 
-        encoding:"latin4";
+        encoding:"utf8";
     }
 
     block CSVInterpreter oftype CSVInterpreter {
@@ -48,6 +48,7 @@ pipeline GoodsPipeline {
 
     constraint Zone1645 oftype RangeConstraint {
         lowerBound: 1645;
+        lowerBoundInclusive: true;
         upperBound: 1645;
         upperBoundInclusive: true;
     }
@@ -61,6 +62,7 @@ pipeline GoodsPipeline {
 
     constraint GeographicCoordinateConstraint oftype RangeConstraint {
         lowerBound: -90;
+        lowerBoundInclusive: true;
         upperBound: 90;
         upperBoundInclusive: true;
     }
