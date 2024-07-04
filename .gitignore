@@ -2,3 +2,7 @@
 /data/*
 !/data/.gitkeep
 *.sqlite
+
+project/*.pdf
+!project/analysis-report.pdf
+!project/data-report.pdf
