@@ -4,5 +4,7 @@
 *.sqlite
 
 project/*.pdf
+project/*.svg
 !project/analysis-report.pdf
 !project/data-report.pdf
+!project/slides.pdf
